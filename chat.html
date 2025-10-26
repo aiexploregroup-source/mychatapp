@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Chat App - Chat</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="chat">
+        <h2>Chat Room</h2>
+        <div id="messages"></div>
+        <input type="text" id="messageInput" placeholder="Type a message...">
+        <button id="sendBtn">Send</button>
+        <button id="signOutBtn">Sign Out</button>
+    </div>
+
+    <!-- Firebase SDK Imports and Initialization -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-analytics.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBJcAn9fZ3NdjAQui_XJb5DbHGsp9bP7_Y",
+            authDomain: "mychatapp-7684f.firebaseapp.com",
+            projectId: "mychatapp-7684f",
+            storageBucket: "mychatapp-7684f.firebasestorage.app",
+            messagingSenderId: "203856610557",
+            appId: "1:203856610557:web:72c5b3fb41fbffacefea94",
+            measurementId: "G-QKMMY65DJC"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        window.auth = auth;
+        window.db = db;
+        window.signOut = signOut;
+        window.onAuthStateChanged = onAuthStateChanged;
+        window.collection = collection;
+        window.addDoc = addDoc;
+        window.onSnapshot = onSnapshot;
+        window.query = query;
+        window.orderBy = orderBy;
+    </script>
+    <script src="chat.js"></script>
+</body>
+</html>

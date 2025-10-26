@@ -120,3 +120,26 @@ hr {
     color: #00ffff;
     text-shadow: 0 0 10px #00ffff;
 }
+/* Existing styles... */
+
+#messages div {
+    margin-bottom: 10px;
+}
+
+#messages small {
+    color: #888;
+    font-size: 0.8em;
+}
+
+#error button {
+    margin-left: 10px;
+    background: #ff0000;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+#error button:hover {
+    background: #cc0000;
+}

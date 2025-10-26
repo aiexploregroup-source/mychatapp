@@ -9,6 +9,8 @@
 <body>
     <div id="auth">
         <h2>Sign In or Sign Up</h2>
+        <div id="error" style="color: red; display: none;"></div> <!-- New error display -->
+        <div id="loading" style="display: none;">Processing...</div> <!-- New loading indicator -->
         <input type="email" id="email" placeholder="Email">
         <input type="password" id="password" placeholder="Password">
         <button id="signInBtn">Sign In</button>
@@ -21,7 +23,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-analytics.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signInWithRedirect, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBJcAn9fZ3NdjAQui_XJb5DbHGsp9bP7_Y",
@@ -42,6 +44,7 @@
         window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
         window.GoogleAuthProvider = GoogleAuthProvider;
         window.signInWithPopup = signInWithPopup;
+        window.signInWithRedirect = signInWithRedirect; // Added for fallback
         window.onAuthStateChanged = onAuthStateChanged;
     </script>
     <script src="auth.js"></script>

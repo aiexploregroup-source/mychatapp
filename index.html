@@ -9,8 +9,8 @@
 <body>
     <div id="auth">
         <h2>Sign In or Sign Up</h2>
-        <div id="error" style="color: red; display: none;"></div> <!-- New error display -->
-        <div id="loading" style="display: none;">Processing...</div> <!-- New loading indicator -->
+        <div id="error" style="color: red; display: none;"></div> <!-- Error display -->
+        <div id="loading" style="display: none;">Processing...</div> <!-- Loading indicator -->
         <input type="email" id="email" placeholder="Email">
         <input type="password" id="password" placeholder="Password">
         <button id="signInBtn">Sign In</button>
@@ -26,13 +26,12 @@
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signInWithRedirect, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyBJcAn9fZ3NdjAQui_XJb5DbHGsp9bP7_Y",
-            authDomain: "mychatapp-7684f.firebaseapp.com",
-            projectId: "mychatapp-7684f",
-            storageBucket: "mychatapp-7684f.firebasestorage.app",
-            messagingSenderId: "203856610557",
-            appId: "1:203856610557:web:72c5b3fb41fbffacefea94",
-            measurementId: "G-QKMMY65DJC"
+            apiKey: "AIzaSyBLtnQJ7AlaVpbcHV-iUuaykNSMB3uLQtE",
+            authDomain: "studio-5343934866-bd6f5.firebaseapp.com",
+            projectId: "studio-5343934866-bd6f5",
+            storageBucket: "studio-5343934866-bd6f5.firebasestorage.app",
+            messagingSenderId: "593387667923",
+            appId: "1:593387667923:web:4d2ed79b84ec8542c1ef26"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -44,7 +43,7 @@
         window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
         window.GoogleAuthProvider = GoogleAuthProvider;
         window.signInWithPopup = signInWithPopup;
-        window.signInWithRedirect = signInWithRedirect; // Added for fallback
+        window.signInWithRedirect = signInWithRedirect;
         window.onAuthStateChanged = onAuthStateChanged;
     </script>
     <script src="auth.js"></script>

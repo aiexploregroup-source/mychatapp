@@ -9,7 +9,21 @@
 <body>
     <div id="chat">
         <h2>Chat Room</h2>
-        <div id="error" style="color: red; display: none;"></div> <!-- New error display -->
+        <div id="error" style="color: red; display: none;"></div>
+        <div id="success" style="color: green; display: none;"></div> <!-- Success message -->
+        <div id="userSearch">
+            <input type="email" id="searchInput" placeholder="Search user by email...">
+            <button id="searchBtn">Search</button>
+            <div id="userList"></div>
+        </div>
+        <div id="privateChatsList">
+            <h3>Your Private Chats</h3>
+            <div id="privateChats"></div>
+        </div>
+        <div id="chatSelector">
+            <button id="globalChatBtn">Global Chat</button>
+            <button id="privateChatBtn" style="display: none;">Current Private Chat</button>
+        </div>
         <div id="messages"></div>
         <input type="text" id="messageInput" placeholder="Type a message...">
         <button id="sendBtn">Send</button>
@@ -21,16 +35,15 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-analytics.js";
         import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, setDoc, getDocs, where, getDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyBJcAn9fZ3NdjAQui_XJb5DbHGsp9bP7_Y",
-            authDomain: "mychatapp-7684f.firebaseapp.com",
-            projectId: "mychatapp-7684f",
-            storageBucket: "mychatapp-7684f.firebasestorage.app",
-            messagingSenderId: "203856610557",
-            appId: "1:203856610557:web:72c5b3fb41fbffacefea94",
-            measurementId: "G-QKMMY65DJC"
+            apiKey: "AIzaSyBLtnQJ7AlaVpbcHV-iUuaykNSMB3uLQtE",
+            authDomain: "studio-5343934866-bd6f5.firebaseapp.com",
+            projectId: "studio-5343934866-bd6f5",
+            storageBucket: "studio-5343934866-bd6f5.firebasestorage.app",
+            messagingSenderId: "593387667923",
+            appId: "1:593387667923:web:4d2ed79b84ec8542c1ef26"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -47,6 +60,11 @@
         window.onSnapshot = onSnapshot;
         window.query = query;
         window.orderBy = orderBy;
+        window.doc = doc;
+        window.setDoc = setDoc;
+        window.getDocs = getDocs;
+        window.where = where;
+        window.getDoc = getDoc;
     </script>
     <script src="chat.js"></script>
 </body>

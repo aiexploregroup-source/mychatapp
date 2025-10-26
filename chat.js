@@ -14,7 +14,7 @@ const privateChatBtn = document.getElementById('privateChatBtn');
 let currentChatType = 'global'; // 'global' or 'private'
 let privateChatId = null; // ID of current private chat
 let isAuthenticated = false;
-let userCache = {}; // Cache for user emails to avoid repeated queries
+let userCache = {}; // Cache for user emails
 
 function showError(message, showRetry = false) {
     errorDiv.textContent = message;
@@ -52,7 +52,7 @@ async function getUserEmail(uid) {
     } catch (error) {
         console.error('Error fetching user email:', error);
     }
-    return uid; // Fallback to UID
+    return uid; // Fallback
 }
 
 // Store user email on auth
@@ -154,7 +154,7 @@ privateChatBtn.addEventListener('click', () => {
     }
 });
 
-// Send message function (reusable for retry)
+// Send message function
 async function sendMessage() {
     const text = messageInput.value.trim();
     if (!text) {
@@ -179,8 +179,10 @@ async function sendMessage() {
         if (currentChatType === 'private' && privateChatId) {
             const chatRef = doc(db, 'privateChats', privateChatId);
             await addDoc(collection(chatRef, 'messages'), messageData);
+            console.log('Private message stored in Firebase:', messageData);
         } else {
             await addDoc(collection(db, 'messages'), messageData);
+            console.log('Global message stored in Firebase:', messageData);
         }
         messageInput.value = '';
         showSuccess('Message sent!');
@@ -192,7 +194,7 @@ async function sendMessage() {
 // Send button event
 sendBtn.addEventListener('click', sendMessage);
 
-// Load messages (global or private) - Real-time with user names and timestamps
+// Load messages (global or private) - Enhanced for global chat display
 function loadMessages() {
     if (!isAuthenticated) return;
     let q;
@@ -204,6 +206,7 @@ function loadMessages() {
     }
     onSnapshot(q, async (snapshot) => {
         messagesDiv.innerHTML = '';
+        console.log(`Loaded ${snapshot.docs.length} messages for ${currentChatType} chat`);
         for (const docSnap of snapshot.docs) {
             const msg = docSnap.data();
             const userEmail = await getUserEmail(msg.uid);

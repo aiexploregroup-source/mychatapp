@@ -14,23 +14,45 @@ const privateChatBtn = document.getElementById('privateChatBtn');
 let currentChatType = 'global'; // 'global' or 'private'
 let privateChatId = null; // ID of current private chat
 let isAuthenticated = false;
+let userCache = {}; // Cache for user emails to avoid repeated queries
 
-function showError(message) {
+function showError(message, showRetry = false) {
     errorDiv.textContent = message;
     errorDiv.style.display = 'block';
     successDiv.style.display = 'none';
+    if (showRetry) {
+        const retryBtn = document.createElement('button');
+        retryBtn.textContent = 'Retry';
+        retryBtn.onclick = () => sendMessage();
+        errorDiv.appendChild(retryBtn);
+    }
 }
 
 function showSuccess(message) {
     successDiv.textContent = message;
     successDiv.style.display = 'block';
     errorDiv.style.display = 'none';
-    setTimeout(() => successDiv.style.display = 'none', 3000); // Hide after 3s
+    setTimeout(() => successDiv.style.display = 'none', 3000);
 }
 
 function clearMessages() {
     errorDiv.style.display = 'none';
     successDiv.style.display = 'none';
+}
+
+// Fetch user email by UID
+async function getUserEmail(uid) {
+    if (userCache[uid]) return userCache[uid];
+    try {
+        const userDoc = await getDoc(doc(db, 'users', uid));
+        if (userDoc.exists()) {
+            userCache[uid] = userDoc.data().email;
+            return userCache[uid];
+        }
+    } catch (error) {
+        console.error('Error fetching user email:', error);
+    }
+    return uid; // Fallback to UID
 }
 
 // Store user email on auth
@@ -132,8 +154,8 @@ privateChatBtn.addEventListener('click', () => {
     }
 });
 
-// Send message (global or private) - Fully functional with feedback
-sendBtn.addEventListener('click', async () => {
+// Send message function (reusable for retry)
+async function sendMessage() {
     const text = messageInput.value.trim();
     if (!text) {
         showError('Message cannot be empty.');
@@ -143,30 +165,34 @@ sendBtn.addEventListener('click', async () => {
         showError('You must be signed in.');
         return;
     }
+    if (!navigator.onLine) {
+        showError('You are offline. Message will be sent when online.', true);
+        return;
+    }
     clearMessages();
     try {
+        const messageData = {
+            text: text,
+            uid: auth.currentUser.uid,
+            timestamp: new Date()
+        };
         if (currentChatType === 'private' && privateChatId) {
             const chatRef = doc(db, 'privateChats', privateChatId);
-            await addDoc(collection(chatRef, 'messages'), {
-                text: text,
-                uid: auth.currentUser.uid,
-                timestamp: new Date()
-            });
+            await addDoc(collection(chatRef, 'messages'), messageData);
         } else {
-            await addDoc(collection(db, 'messages'), {
-                text: text,
-                uid: auth.currentUser.uid,
-                timestamp: new Date()
-            });
+            await addDoc(collection(db, 'messages'), messageData);
         }
         messageInput.value = '';
         showSuccess('Message sent!');
     } catch (error) {
-        showError('Error sending message: ' + error.message);
+        showError('Error sending message: ' + error.message, true);
     }
-});
+}
 
-// Load messages (global or private) - Real-time for all users
+// Send button event
+sendBtn.addEventListener('click', sendMessage);
+
+// Load messages (global or private) - Real-time with user names and timestamps
 function loadMessages() {
     if (!isAuthenticated) return;
     let q;
@@ -176,14 +202,16 @@ function loadMessages() {
     } else {
         q = query(collection(db, 'messages'), orderBy('timestamp'));
     }
-    onSnapshot(q, (snapshot) => {
+    onSnapshot(q, async (snapshot) => {
         messagesDiv.innerHTML = '';
-        snapshot.forEach((doc) => {
-            const msg = doc.data();
+        for (const docSnap of snapshot.docs) {
+            const msg = docSnap.data();
+            const userEmail = await getUserEmail(msg.uid);
+            const timestamp = msg.timestamp ? new Date(msg.timestamp.seconds * 1000).toLocaleString() : '';
             const msgEl = document.createElement('div');
-            msgEl.textContent = `${msg.uid}: ${msg.text}`;
+            msgEl.innerHTML = `<strong>${userEmail}</strong>: ${msg.text} <small>(${timestamp})</small>`;
             messagesDiv.appendChild(msgEl);
-        });
+        }
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }, (error) => {
         showError('Error loading messages: ' + error.message);

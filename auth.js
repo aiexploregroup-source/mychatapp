@@ -2,6 +2,8 @@ const signInBtn = document.getElementById('signInBtn');
 const signUpBtn = document.getElementById('signUpBtn');
 const googleSignInBtn = document.getElementById('googleSignInBtn');
 
+let isSigningUp = false;
+
 signInBtn.addEventListener('click', () => {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -11,11 +13,19 @@ signInBtn.addEventListener('click', () => {
 });
 
 signUpBtn.addEventListener('click', () => {
+    isSigningUp = true;
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    createUserWithEmailAndPassword(auth, email, password).catch((error) => {
-        alert('Sign-up error: ' + error.message);
-    });
+    createUserWithEmailAndPassword(auth, email, password)
+        .then(() => {
+            if (confirm('Signup successful! Click OK to continue to the chat app.')) {
+                window.location.href = 'chat.html';
+            }
+        })
+        .catch((error) => {
+            alert('Sign-up error: ' + error.message);
+            isSigningUp = false;
+        });
 });
 
 googleSignInBtn.addEventListener('click', () => {
@@ -25,9 +35,8 @@ googleSignInBtn.addEventListener('click', () => {
     });
 });
 
-// Redirect to chat after sign-in
 onAuthStateChanged(auth, (user) => {
-    if (user) {
+    if (user && !isSigningUp) {
         window.location.href = 'chat.html';
     }
 });
